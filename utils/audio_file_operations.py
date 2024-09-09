@@ -60,4 +60,11 @@ def rename_file(old_path, new_path):
     os.rename(old_path, new_path)
 
 def move_file(old_path, new_path):
-    shutil.move(old_path, new_path)
+    try:
+        # 确保目标目录存在
+        os.makedirs(os.path.dirname(new_path), exist_ok=True)
+        shutil.move(old_path, new_path)
+        print(f"Successfully moved: {old_path} -> {new_path}")
+    except Exception as e:
+        print(f"Error moving file {old_path} to {new_path}: {str(e)}")
+        raise

@@ -172,27 +172,43 @@ class AudioManager:
         # audio.save()
         print(_("已更新 {} 的新曲目编号: {}").format(file_path, new_track_number))
 
-    def organize_files(self, include_album):
+    def organize_files(self, include_album, include_lrc):
         for file_path in self.audio_files:
-            tags = self.audio_tags[file_path]
-            artist = tags.get('artist', '未知艺术家')
-            album = tags.get('album', '未知专辑')
-            file_name = os.path.basename(file_path)
+            try:
+                tags = self.audio_tags[file_path]
+                artist = tags.get('artist', '未知艺术家')
+                album = tags.get('album', '未知专辑')
+                file_name = os.path.basename(file_path)
+                
+                if include_album:
+                    new_path = os.path.join(self.directory, artist, album, file_name)
+                else:
+                    new_path = os.path.join(self.directory, artist, file_name)
+                
+                # 确保目标目录存在
+                os.makedirs(os.path.dirname(new_path), exist_ok=True)
+                
+                # 移动文件
+                move_file(file_path, new_path)
+                print(f"Moved file: {file_path} -> {new_path}")
+                
+                # 移动同名的 .lrc 文件
+                if include_lrc:
+                    lrc_file = os.path.splitext(file_path)[0] + '.lrc'
+                    if os.path.exists(lrc_file):
+                        new_lrc_path = os.path.splitext(new_path)[0] + '.lrc'
+                        move_file(lrc_file, new_lrc_path)
+                        print(f"Moved LRC file: {lrc_file} -> {new_lrc_path}")
+                
+                # 更新 audio_files 中的路径
+                index = self.audio_files.index(file_path)
+                self.audio_files[index] = new_path
+                
+                # 更新 audio_tags 中的键
+                self.audio_tags[new_path] = self.audio_tags.pop(file_path)
             
-            if include_album:
-                new_path = os.path.join(self.directory, artist, album, file_name)
-            else:
-                new_path = os.path.join(self.directory, artist, file_name)
-            
-            os.makedirs(os.path.dirname(new_path), exist_ok=True)
-            move_file(file_path, new_path)
-            
-            # 更新 audio_files 中的路径
-            index = self.audio_files.index(file_path)
-            self.audio_files[index] = new_path
-            
-            # 更新 audio_tags 中的键
-            self.audio_tags[new_path] = self.audio_tags.pop(file_path)
+            except Exception as e:
+                print(f"Error organizing file {file_path}: {str(e)}")
 
     def batch_rename(self, old_text, new_text):
         for i, file_path in enumerate(self.audio_files):

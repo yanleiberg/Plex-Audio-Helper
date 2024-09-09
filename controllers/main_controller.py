@@ -38,8 +38,8 @@ class MainController:
     def update_tags(self):
         self.audio_manager.update_tags()
 
-    def organize_files(self, include_album):
-        self.audio_manager.organize_files(include_album)
+    def organize_files(self, include_album, include_lrc):
+        self.audio_manager.organize_files(include_album, include_lrc)
 
     def batch_rename(self, old_text, new_text):
         self.audio_manager.batch_rename(old_text, new_text)

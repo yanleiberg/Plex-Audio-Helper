@@ -56,5 +56,7 @@
     "英文": "English",
     "主题": "Theme",
     "亮色主题": "Light Theme",
-    "暗色主题": "Dark Theme"
+    "暗色主题": "Dark Theme",
+    "包含同名歌词文件": "Include matching lyric files",
+    "选中此项将同时移动同名的 .lrc 歌词文件": "Check this to move matching .lrc lyric files"
 }
