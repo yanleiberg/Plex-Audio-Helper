@@ -45,8 +45,8 @@ class UpdateTagView:
     def update_preview(self):
         preview_data = self.controller.get_tag_preview()
         self.tag_preview.delete(*self.tag_preview.get_children())
-        for item in preview_data:
-            self.tag_preview.insert("", "end", values=item)
+        for file_name, current_tag, new_tag in preview_data:
+            self.tag_preview.insert("", "end", values=(file_name, current_tag, new_tag))
         
         # 调整列宽以适应内容
         for col in ("file", "current_tag", "new_tag"):
@@ -82,11 +82,14 @@ class ToolTip:
         self.widget.bind("<Leave>", self.hide_tooltip)
 
     def show_tooltip(self, event=None):
+        x = y = 0
         x, y, _, _ = self.widget.bbox("insert")
         x += self.widget.winfo_rootx() + 25
         y += self.widget.winfo_rooty() + 25
 
+        # creates a toplevel window
         self.tooltip = tk.Toplevel(self.widget)
+        # Leaves only the label and removes the app window
         self.tooltip.wm_overrideredirect(True)
         self.tooltip.wm_geometry(f"+{x}+{y}")
 
