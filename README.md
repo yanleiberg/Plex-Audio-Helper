@@ -119,3 +119,16 @@ This project is licensed under the MIT License. For details, please refer to the
 
 - **Multi-language Support**: All views support multi-language display.
 - **Theme Switching**: The application theme can be changed through the menu in the main view.
+
+---
+
+## 安装依赖
+
+1. 确保你的 Python 安装包含 `tkinter`。在大多数 Python 安装中，`tkinter` 是默认包含的。如果没有，你可能需要单独安装。
+
+2. 安装其他依赖：
+   ```bash
+   pip install -r requirements.txt
+   ```
+
+这样可以确保用户了解所有必要的依赖，包括那些可能需要特别注意的依赖。
