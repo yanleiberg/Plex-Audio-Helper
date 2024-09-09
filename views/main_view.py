@@ -237,6 +237,7 @@ class MainView:
         if output_directory:
             self.output_directory.set(_("选择的目录: {}").format(output_directory))
             self.controller.set_directory(self.controller.get_input_directory(), output_directory)
+            self.refresh_all_views()
 
     def update_file_stats(self):
         stats = self.controller.get_file_stats()
@@ -291,3 +292,9 @@ class MainView:
     def on_window_resize(self, event):
         # 当窗口大小变化时，更新当前视图
         self.update_current_view()
+
+    def refresh_all_views(self):
+        self.update_tag_view.update_preview()
+        self.organize_files_view.refresh_preview()
+        self.batch_rename_view.update_preview()
+        self.duplicate_search_view.search_duplicates()

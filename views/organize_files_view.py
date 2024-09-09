@@ -47,6 +47,9 @@ class OrganizeFilesView:
             file_name = os.path.basename(old_path)
             self.organize_preview.insert("", "end", values=(file_name, artist, album, new_path))
 
+    def refresh_preview(self):
+        self.update_preview()
+
     def start_organize_files(self):
         if messagebox.askyesno(_("确认"), _("确定要整理文件吗？")):
             self.controller.organize_files(self.include_album.get(), self.include_lrc.get())  # 传递 include_lrc 参数
