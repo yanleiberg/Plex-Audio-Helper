@@ -69,9 +69,9 @@ class AudioManager:
             album = tags.get('album', _('未知专辑'))
             
             if include_album:
-                new_path = os.path.join(self.output_directory, artist, album, os.path.basename(file_path))
+                new_path = os.path.normpath(os.path.join(self.output_directory, artist, album, os.path.basename(file_path)))
             else:
-                new_path = os.path.join(self.output_directory, artist, os.path.basename(file_path))
+                new_path = os.path.normpath(os.path.join(self.output_directory, artist, os.path.basename(file_path)))
             
             preview.append((file_path, new_path, artist, album))
         return preview
@@ -183,9 +183,9 @@ class AudioManager:
                 file_name = os.path.basename(file_path)
                 
                 if include_album:
-                    new_path = os.path.join(self.output_directory, artist, album, file_name)
+                    new_path = os.path.normpath(os.path.join(self.output_directory, artist, album, file_name))
                 else:
-                    new_path = os.path.join(self.output_directory, artist, file_name)
+                    new_path = os.path.normpath(os.path.join(self.output_directory, artist, file_name))
                 
                 # 确保目标目录存在
                 os.makedirs(os.path.dirname(new_path), exist_ok=True)
@@ -198,7 +198,7 @@ class AudioManager:
                 if include_lrc:
                     lrc_file = os.path.splitext(file_path)[0] + '.lrc'
                     if os.path.exists(lrc_file):
-                        new_lrc_path = os.path.splitext(new_path)[0] + '.lrc'
+                        new_lrc_path = os.path.normpath(os.path.splitext(new_path)[0] + '.lrc')
                         move_file(lrc_file, new_lrc_path)
                         print(f"Moved LRC file: {lrc_file} -> {new_lrc_path}")
                 

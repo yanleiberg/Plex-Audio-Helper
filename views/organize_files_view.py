@@ -45,6 +45,8 @@ class OrganizeFilesView:
         self.organize_preview.delete(*self.organize_preview.get_children())
         for old_path, new_path, artist, album in preview_data:
             file_name = os.path.basename(old_path)
+            # 使用 os.path.normpath 来确保路径显示一致
+            new_path = os.path.normpath(new_path)
             self.organize_preview.insert("", "end", values=(file_name, artist, album, new_path))
 
     def refresh_preview(self):
