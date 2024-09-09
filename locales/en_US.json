@@ -58,5 +58,8 @@
     "亮色主题": "Light Theme",
     "暗色主题": "Dark Theme",
     "包含同名歌词文件": "Include matching lyric files",
-    "选中此项将同时移动同名的 .lrc 歌词文件": "Check this to move matching .lrc lyric files"
+    "选中此项将同时移动同名的 .lrc 歌词文件": "Check this to move matching .lrc lyric files",
+    "输入目录:": "Input Directory:",
+    "输出目录:": "Output Directory:",
+    "选择输出目录": "Select Output Directory"
 }

@@ -6,8 +6,8 @@ class MainController:
         self.root = root
         self.audio_manager = AudioManager()
 
-    def set_directory(self, directory):
-        self.audio_manager.set_directory(directory)
+    def set_directory(self, input_directory, output_directory=None):
+        self.audio_manager.set_directory(input_directory, output_directory)
 
     def cache_file_info(self, progress_callback):
         self.audio_manager.cache_file_info(progress_callback)
@@ -46,3 +46,9 @@ class MainController:
 
     def get_directory(self):
         return self.audio_manager.directory
+
+    def get_input_directory(self):
+        return self.audio_manager.input_directory
+
+    def get_output_directory(self):
+        return self.audio_manager.output_directory

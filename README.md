@@ -47,11 +47,11 @@
 
 - **[音乐标签PC版](https://www.cnblogs.com/vinlxc/p/11347744.html)**: 用于批量编辑音频文件标签。
 - **[MusicBrainz Picard](https://picard.musicbrainz.org/)**: 一款智能音乐标签管理器，支持从 MusicBrainz 数据库获取专辑元数据。
-- **[CUETools](http://cue.tools/wiki/Main_Page)**: 用于音频文件的校验和修复。
+- **[CUETools](http://cue.tools/wiki/Main_Page)**: 用于分割整体音轨文件为多轨（plex不支持CUE文件）。
 
 ## 许可
 
-本项目采用 MIT 许可协议，详情请参阅 LICENSE 文件。
+本项目采用 [MIT 许可协议](https://opensource.org/license/mit)，详情请参阅 [LICENSE](https://opensource.org/license/mit) 文件。
 
 ## 附加功能
 

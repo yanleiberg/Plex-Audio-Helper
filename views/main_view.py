@@ -33,6 +33,7 @@ class MainView:
         self.controller = controller
         self.style = style
         self.directory = tk.StringVar()
+        self.output_directory = tk.StringVar()
         self.strings = MainViewStrings()
         self.load_icons()
         self.create_widgets()
@@ -78,6 +79,10 @@ class MainView:
         ttk.Label(frame, text=self.strings.SELECT_DIRECTORY, image=self.icons['folder'], compound=tk.LEFT).grid(row=0, column=0, padx=5, pady=5)
         ttk.Entry(frame, textvariable=self.directory, width=50).grid(row=0, column=1, padx=5, pady=5)
         ttk.Button(frame, text="...", command=self.choose_directory, width=3).grid(row=0, column=2, padx=5, pady=5)
+
+        ttk.Label(frame, text=_("输出目录:")).grid(row=1, column=0, padx=5, pady=5)
+        ttk.Entry(frame, textvariable=self.output_directory, width=50).grid(row=1, column=1, padx=5, pady=5)
+        ttk.Button(frame, text=_("选择输出目录"), command=self.choose_output_directory, width=15).grid(row=1, column=2, padx=5, pady=5)
 
     def create_file_stats_frame(self, parent):
         frame = ttk.Frame(parent, padding="5")
@@ -184,7 +189,9 @@ class MainView:
         directory = filedialog.askdirectory()
         if directory:
             self.directory.set(_("选择的目录: {}").format(directory))
-            self.controller.set_directory(directory)
+            if not self.output_directory.get():
+                self.output_directory.set(_("选择的目录: {}").format(directory))
+            self.controller.set_directory(directory, self.output_directory.get())
             
             # 创建进度条窗口
             progress_window = tk.Toplevel(self.root)
@@ -214,6 +221,12 @@ class MainView:
                 self.update_current_view()
             
             threading.Thread(target=cache_files_thread, daemon=True).start()
+
+    def choose_output_directory(self):
+        output_directory = filedialog.askdirectory()
+        if output_directory:
+            self.output_directory.set(_("选择的目录: {}").format(output_directory))
+            self.controller.set_directory(self.controller.get_input_directory(), output_directory)
 
     def update_file_stats(self):
         stats = self.controller.get_file_stats()

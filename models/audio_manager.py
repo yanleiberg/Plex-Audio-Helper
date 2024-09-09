@@ -6,20 +6,22 @@ from i18n import _  # 添加这行
 
 class AudioManager:
     def __init__(self):
-        self.directory = None
+        self.input_directory = None
+        self.output_directory = None
         self.supported_formats = ('.mp3', '.flac', '.ape', '.wav', '.m4a')
         self.audio_files = []
         self.audio_tags = {}
 
-    def set_directory(self, directory):
-        self.directory = directory
+    def set_directory(self, input_directory, output_directory=None):
+        self.input_directory = input_directory
+        self.output_directory = output_directory if output_directory else input_directory
 
     def cache_file_info(self, progress_callback=None):
         self.audio_files = []
         self.audio_tags = {}
-        total_files = sum([len(files) for _, _, files in os.walk(self.directory)])
+        total_files = sum([len(files) for _, _, files in os.walk(self.input_directory)])
         processed_files = 0
-        for root, _, files in os.walk(self.directory):
+        for root, _, files in os.walk(self.input_directory):
             for file in files:
                 if file.lower().endswith(self.supported_formats):
                     file_path = os.path.join(root, file)
@@ -67,16 +69,16 @@ class AudioManager:
             album = tags.get('album', _('未知专辑'))
             
             if include_album:
-                new_path = os.path.join(self.directory, artist, album, os.path.basename(file_path))
+                new_path = os.path.join(self.output_directory, artist, album, os.path.basename(file_path))
             else:
-                new_path = os.path.join(self.directory, artist, os.path.basename(file_path))
+                new_path = os.path.join(self.output_directory, artist, os.path.basename(file_path))
             
             preview.append((file_path, new_path, artist, album))
         return preview
 
     def get_rename_preview(self, old_text, new_text):
         preview_data = []
-        for root, _, files in os.walk(self.directory):
+        for root, _, files in os.walk(self.input_directory):
             for file in files:
                 if file.lower().endswith(self.supported_formats):
                     name, ext = os.path.splitext(file)
@@ -181,9 +183,9 @@ class AudioManager:
                 file_name = os.path.basename(file_path)
                 
                 if include_album:
-                    new_path = os.path.join(self.directory, artist, album, file_name)
+                    new_path = os.path.join(self.output_directory, artist, album, file_name)
                 else:
-                    new_path = os.path.join(self.directory, artist, file_name)
+                    new_path = os.path.join(self.output_directory, artist, file_name)
                 
                 # 确保目标目录存在
                 os.makedirs(os.path.dirname(new_path), exist_ok=True)
