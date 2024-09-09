@@ -198,6 +198,15 @@ class MainView:
             progress_window.title(_("读取文件中"))
             progress_window.geometry("300x100")
             
+            # 设置进度窗口在主窗口中间
+            progress_window.update_idletasks()
+            x = self.root.winfo_x() + (self.root.winfo_width() - progress_window.winfo_width()) // 2
+            y = self.root.winfo_y() + (self.root.winfo_height() - progress_window.winfo_height()) // 2
+            progress_window.geometry(f"+{x}+{y}")
+            
+            # 设置进度窗口为模态窗口
+            progress_window.grab_set()
+            
             progress_var = tk.DoubleVar()
             progress_bar = ttk.Progressbar(progress_window, variable=progress_var, maximum=100)
             progress_bar.pack(pady=20)
@@ -216,6 +225,7 @@ class MainView:
                 self.root.config(cursor="wait")
                 self.controller.cache_file_info(update_progress)
                 self.root.config(cursor="")
+                progress_window.grab_release()
                 progress_window.destroy()
                 self.update_file_stats()
                 self.update_current_view()
