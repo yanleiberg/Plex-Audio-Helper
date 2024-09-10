@@ -1,8 +1,9 @@
 import os
 from collections import defaultdict
 from utils.audio_file_operations import get_audio_tags, delete_file, rename_file, move_file
-from utils.utils import format_time, time_to_seconds
+from utils.utils import format_time, time_to_seconds, is_ssd
 from i18n import _  # 添加这行
+import concurrent.futures
 
 class AudioManager:
     def __init__(self):
@@ -23,15 +24,37 @@ class AudioManager:
                           for file in files if file.lower().endswith(self.supported_formats))
         processed_files = 0
 
-        for root, _, files in os.walk(self.input_directory):
-            for file in files:
-                if file.lower().endswith(self.supported_formats):
-                    file_path = os.path.join(root, file)
+        def process_file(file_path):
+            tags = get_audio_tags(file_path)
+            return file_path, tags
+
+        if is_ssd(self.input_directory):
+            with concurrent.futures.ThreadPoolExecutor(max_workers=3) as executor:
+                future_to_file = {}
+                for root, _, files in os.walk(self.input_directory):
+                    for file in files:
+                        if file.lower().endswith(self.supported_formats):
+                            file_path = os.path.join(root, file)
+                            future = executor.submit(process_file, file_path)
+                            future_to_file[future] = file_path
+
+                for future in concurrent.futures.as_completed(future_to_file):
+                    file_path, tags = future.result()
                     self.audio_files.append(file_path)
-                    self.audio_tags[file_path] = get_audio_tags(file_path)
+                    self.audio_tags[file_path] = tags
                     processed_files += 1
                     if progress_callback:
                         progress_callback(processed_files, total_files)
+        else:
+            for root, _, files in os.walk(self.input_directory):
+                for file in files:
+                    if file.lower().endswith(self.supported_formats):
+                        file_path = os.path.join(root, file)
+                        self.audio_files.append(file_path)
+                        self.audio_tags[file_path] = get_audio_tags(file_path)
+                        processed_files += 1
+                        if progress_callback:
+                            progress_callback(processed_files, total_files)
 
     def get_file_stats(self):
         stats = defaultdict(lambda: {"count": 0, "size": 0})
