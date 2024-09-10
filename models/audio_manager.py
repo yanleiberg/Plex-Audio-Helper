@@ -80,6 +80,8 @@ class AudioManager:
 
     def get_rename_preview(self, old_text, new_text):
         preview_data = []
+        if self.input_directory is None:
+            return preview_data  # 如果没有选择目录，返回空列表
         for root, _, files in os.walk(self.input_directory):
             for file in files:
                 if file.lower().endswith(self.supported_formats):

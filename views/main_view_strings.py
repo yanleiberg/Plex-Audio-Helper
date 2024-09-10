@@ -1,0 +1,25 @@
+from i18n import _, translate_class
+
+@translate_class
+class MainViewStrings:
+    TITLE = _("音频文件管理器")
+    LANGUAGE = _("语言")
+    CHINESE = _("中文")
+    ENGLISH = _("英文")
+    THEME = _("主题")
+    LIGHT_THEME = _("亮色主题")
+    DARK_THEME = _("暗色主题")
+    INPUT_DIRECTORY = _("输入目录:")
+    OUTPUT_DIRECTORY = _("输出目录:")
+    SELECT_DIRECTORY = _("选择目录")
+    SELECT_OUTPUT_DIRECTORY = _("选择输出目录")
+    SELECTED_DIRECTORY = _("选择的目录: {}")
+    FILE_TYPE = _("文件类型")
+    FILE_COUNT = _("文件数量")
+    TOTAL_SIZE = _("总大小")
+    PROPORTION = _("比例")
+    UPDATE_TRACK_TAG = _("更新 Track Tag")
+    ORGANIZE_AUDIO_FILES = _("整理音频文件")
+    BATCH_RENAME = _("批量重命名")
+    DUPLICATE_SEARCH = _("重复文件搜索")
+    READING_FILES = _("读取文件中")

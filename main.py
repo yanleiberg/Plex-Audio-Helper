@@ -3,6 +3,7 @@ import os
 import tkinter as tk
 from tkinter import ttk
 from PIL import Image, ImageTk
+from i18n import _, i18n
 
 # 添加项目根目录到 Python 路径
 project_root = os.path.dirname(os.path.abspath(__file__))
@@ -10,14 +11,13 @@ sys.path.insert(0, project_root)
 
 from controllers.main_controller import MainController
 from views.main_view import MainView
-from i18n import _
 
 def main():
     root = tk.Tk()
     root.title(_("音频文件管理器"))
     
     # 设置应用程序图标
-    icon_path = os.path.join(project_root, 'icons', 'app_icon.png')
+    icon_path = os.path.join(project_root, 'assets', 'icons', 'app_icon.png')
     if os.path.exists(icon_path):
         try:
             icon_image = Image.open(icon_path)

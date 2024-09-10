@@ -168,8 +168,12 @@ class DuplicateSearchView:
         self.search_duplicates()  # 刷新重复文件列表以使用新的翻译
 
         # 更新待删除目录标签
-        to_delete_dir = os.path.join(self.controller.get_directory(), "To_Delete")
-        self.to_delete_dir_label.config(text=_("待删除文件将被移动到: {}").format(to_delete_dir))
+        directory = self.controller.get_directory()
+        if directory:
+            to_delete_dir = os.path.join(directory, "To_Delete")
+            self.to_delete_dir_label.config(text=_("待删除文件将被移动到: {}").format(to_delete_dir))
+        else:
+            self.to_delete_dir_label.config(text=_("请先选择一个目录"))
 
         self.update_to_delete_dir_label()
 

@@ -40,7 +40,7 @@ class UpdateTagView:
         self.create_tooltip(self.update_button, _("点击此按钮开始更新所有音频文件的 Track Tag"))
 
     def create_tooltip(self, widget, text):
-        tooltip = ToolTip(widget, text)
+        ToolTip(widget, text)
 
     def update_preview(self):
         preview_data = self.controller.get_tag_preview()
@@ -80,18 +80,12 @@ class ToolTip:
         self.tooltip = None
         self.widget.bind("<Enter>", self.show_tooltip)
         self.widget.bind("<Leave>", self.hide_tooltip)
+        self.widget.bind("<Motion>", self.move_tooltip)
 
     def show_tooltip(self, event=None):
-        x = y = 0
-        x, y, _, _ = self.widget.bbox("insert")
-        x += self.widget.winfo_rootx() + 25
-        y += self.widget.winfo_rooty() + 25
-
-        # creates a toplevel window
         self.tooltip = tk.Toplevel(self.widget)
-        # Leaves only the label and removes the app window
         self.tooltip.wm_overrideredirect(True)
-        self.tooltip.wm_geometry(f"+{x}+{y}")
+        self.tooltip.wm_geometry(f"+{event.x_root + 10}+{event.y_root + 10}")
 
         label = ttk.Label(self.tooltip, text=self.text, background="#ffffe0", relief="solid", borderwidth=1)
         label.pack()
@@ -100,3 +94,7 @@ class ToolTip:
         if self.tooltip:
             self.tooltip.destroy()
             self.tooltip = None
+
+    def move_tooltip(self, event=None):
+        if self.tooltip:
+            self.tooltip.wm_geometry(f"+{event.x_root + 10}+{event.y_root + 10}")

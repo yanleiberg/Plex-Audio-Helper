@@ -9,7 +9,8 @@ class I18n:
 
     def load_translations(self):
         try:
-            file_path = os.path.join(os.path.dirname(__file__), f'{self.language}.json')
+            # 更新文件路径
+            file_path = os.path.join(os.path.dirname(os.path.dirname(__file__)), 'translations', f'{self.language}.json')
             with open(file_path, 'r', encoding='utf-8') as f:
                 self.translations = json.load(f)
         except FileNotFoundError:
