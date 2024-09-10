@@ -95,7 +95,7 @@ class DuplicateSearchView:
         for index, (item_values, item) in enumerate(sorted_items):
             self.duplicate_tree.move(item, '', index)
             if item_values['values'][0] == _("✓"):
-                self.duplicate_tree.item(item, tags=('delete',))
+                self.duplicate_tree.item(item, values=(item_values['values'][0], *item_values['values'][1:]), tags=('delete',))
             else:
                 self.duplicate_tree.item(item, tags=())
         
@@ -103,6 +103,7 @@ class DuplicateSearchView:
 
     def delete_selected(self):
         selected_items = [item for item in self.duplicate_tree.selection() if self.duplicate_tree.item(item)['values'][0] == "✓"]
+        print(f"Debug: Selected items for deletion: {len(selected_items)}")
         if selected_items:
             if messagebox.askyesno(_("确认"), _("确定要删除选中的文件吗？")):
                 deleted_count = self.controller.delete_selected_duplicates(selected_items, self.duplicate_tree)
@@ -113,6 +114,7 @@ class DuplicateSearchView:
 
     def move_files_to_delete(self):
         selected_items = [item for item in self.duplicate_tree.selection() if self.duplicate_tree.item(item)['values'][0] == "✓"]
+        print(f"Debug: Selected items for moving: {len(selected_items)}")
         if selected_items:
             directory = self.controller.get_output_directory()  # 使用输出目录
             if directory:

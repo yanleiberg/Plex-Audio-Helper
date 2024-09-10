@@ -129,7 +129,9 @@ class AudioManager:
                 
                 # 保留第一个（最高质量）文件，标记其余为待删除
                 for item in sorted_items[1:]:
-                    tree.set(item, "delete", "✓")
+                    values = list(tree.item(item)['values'])
+                    values[0] = "✓"
+                    tree.item(item, values=values)
                     selected_count += 1
 
         print(f"Debug: Found {len(duplicates)} duplicate groups")
