@@ -45,16 +45,24 @@ class UpdateTagView:
     def update_preview(self):
         preview_data = self.controller.get_tag_preview()
         self.tag_preview.delete(*self.tag_preview.get_children())
-        for file_name, current_tag, new_tag in preview_data:
-            self.tag_preview.insert("", "end", values=(file_name, current_tag, new_tag))
         
-        # 调整列宽以适应内容
+        # 使用批量插入来提高性能
+        for i in range(0, len(preview_data), 1000):
+            batch = preview_data[i:i+1000]
+            self.tag_preview.insert("", "end", values=batch)
+        
+        # 延迟调整列宽，以提高性能
+        self.frame.after(100, self.adjust_column_widths, preview_data)
+
+    def adjust_column_widths(self, preview_data):
+        font = tkfont.Font()
         for col in ("file", "current_tag", "new_tag"):
-            self.tag_preview.column(col, width=tkfont.Font().measure(self.tag_preview.heading(col)['text']))
-            for row in preview_data:
-                width = tkfont.Font().measure(row[self.tag_preview["columns"].index(col)])
-                if self.tag_preview.column(col, 'width') < width:
-                    self.tag_preview.column(col, width=width)
+            max_width = font.measure(self.tag_preview.heading(col)['text'])
+            for row in preview_data[:1000]:  # 只检查前1000行以提高性能
+                width = font.measure(str(row[self.tag_preview["columns"].index(col)]))
+                if width > max_width:
+                    max_width = width
+            self.tag_preview.column(col, width=max_width + 10)  # 添加一些额外的空间
 
     def start_update_tag(self):
         if messagebox.askyesno(_("确认"), _("确定要更新所有音频文件的 Track Number 吗？")):
@@ -83,10 +91,11 @@ class ToolTip:
         self.widget.bind("<Motion>", self.move_tooltip)
 
     def show_tooltip(self, event=None):
+        x = self.widget.winfo_rootx() + event.x + 10
+        y = self.widget.winfo_rooty() + event.y + 10
         self.tooltip = tk.Toplevel(self.widget)
         self.tooltip.wm_overrideredirect(True)
-        self.tooltip.wm_geometry(f"+{event.x_root + 10}+{event.y_root + 10}")
-
+        self.tooltip.wm_geometry(f"+{x}+{y}")
         label = ttk.Label(self.tooltip, text=self.text, background="#ffffe0", relief="solid", borderwidth=1)
         label.pack()
 
@@ -97,4 +106,6 @@ class ToolTip:
 
     def move_tooltip(self, event=None):
         if self.tooltip:
-            self.tooltip.wm_geometry(f"+{event.x_root + 10}+{event.y_root + 10}")
+            x = self.widget.winfo_rootx() + event.x + 10
+            y = self.widget.winfo_rooty() + event.y + 10
+            self.tooltip.wm_geometry(f"+{x}+{y}")
