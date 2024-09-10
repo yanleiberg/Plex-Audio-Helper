@@ -45,7 +45,7 @@ class MainView:
 
     def load_icons(self):
         icon_size = (24, 24)
-        icons_dir = os.path.join(os.path.dirname(os.path.dirname(__file__)), 'icons')
+        icons_dir = os.path.join(os.path.dirname(os.path.dirname(__file__)), 'assets', 'icons')
         self.icons = {
             'folder': ImageTk.PhotoImage(Image.open(os.path.join(icons_dir, 'folder.png')).resize(icon_size)),
             'update': ImageTk.PhotoImage(Image.open(os.path.join(icons_dir, 'update.png')).resize(icon_size)),
@@ -269,8 +269,10 @@ class MainView:
         self.root.update()
 
     def load_window_settings(self):
+        config_dir = os.path.join(os.path.dirname(os.path.dirname(__file__)), 'config')
+        settings_file = os.path.join(config_dir, 'window_settings.json')
         try:
-            with open('window_settings.json', 'r') as f:
+            with open(settings_file, 'r') as f:
                 settings = json.load(f)
                 self.root.geometry(f"{settings['width']}x{settings['height']}+{settings['x']}+{settings['y']}")
         except FileNotFoundError:
@@ -283,7 +285,10 @@ class MainView:
             'x': self.root.winfo_x(),
             'y': self.root.winfo_y()
         }
-        with open('window_settings.json', 'w') as f:
+        config_dir = os.path.join(os.path.dirname(os.path.dirname(__file__)), 'config')
+        os.makedirs(config_dir, exist_ok=True)
+        settings_file = os.path.join(config_dir, 'window_settings.json')
+        with open(settings_file, 'w') as f:
             json.dump(settings, f)
 
     def on_closing(self):

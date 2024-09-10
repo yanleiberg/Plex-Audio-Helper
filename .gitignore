@@ -26,7 +26,7 @@ ehthumbs.db
 Thumbs.db
 
 # Project specific
-window_settings.json
+/config/window_settings.json
 *.log
 
 # Temporary files
