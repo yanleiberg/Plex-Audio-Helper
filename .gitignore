@@ -29,6 +29,9 @@ Thumbs.db
 /config/window_settings.json
 *.log
 
+# i18n
+i18n/*.pyc
+
 # Temporary files
 *.tmp
 *.bak
