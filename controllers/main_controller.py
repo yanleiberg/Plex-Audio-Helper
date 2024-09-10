@@ -45,7 +45,7 @@ class MainController:
         self.audio_manager.batch_rename(old_text, new_text)
 
     def get_directory(self):
-        return self.audio_manager.directory
+        return self.audio_manager.input_directory  # 改为 input_directory
 
     def get_input_directory(self):
         return self.audio_manager.input_directory

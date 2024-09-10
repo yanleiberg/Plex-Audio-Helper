@@ -18,7 +18,7 @@ class DuplicateSearchView:
         self.auto_select_button = ttk.Button(button_frame, text=_("自动选择"), command=self.auto_select_duplicates)
         self.auto_select_button.pack(side=tk.LEFT, padx=5)
         
-        self.delete_button = ttk.Button(button_frame, text=_("删除选中项"), command=self.delete_selected_duplicates)
+        self.delete_button = ttk.Button(button_frame, text=_("删除选中项"), command=self.delete_selected)
         self.delete_button.pack(side=tk.LEFT, padx=5)
         
         self.move_button = ttk.Button(button_frame, text=_("移动待删除文件"), command=self.move_files_to_delete)
@@ -101,53 +101,39 @@ class DuplicateSearchView:
         
         messagebox.showinfo(_("自动选择完成"), _("已选择 {} 个文件为待删除状态").format(selected_count))
 
-    def delete_selected_duplicates(self):
-        selected_items = [item for item in self.duplicate_tree.selection() if self.duplicate_tree.set(item, "delete") == _("✓")]
+    def delete_selected(self):
+        selected_items = [item for item in self.duplicate_tree.selection() if self.duplicate_tree.item(item)['values'][0] == "✓"]
         if selected_items:
             if messagebox.askyesno(_("确认"), _("确定要删除选中的文件吗？")):
                 deleted_count = self.controller.delete_selected_duplicates(selected_items, self.duplicate_tree)
                 messagebox.showinfo(_("完成"), _("已删除 {} 个文件").format(deleted_count))
+                self.search_duplicates()  # 刷新列表
         else:
             messagebox.showinfo(_("提示"), _("没有选中要删除的文件"))
 
     def move_files_to_delete(self):
-        selected_items = [item for item in self.duplicate_tree.get_children() if self.duplicate_tree.set(item, "delete") == _("✓")]
-        if not selected_items:
+        selected_items = [item for item in self.duplicate_tree.selection() if self.duplicate_tree.item(item)['values'][0] == "✓"]
+        if selected_items:
+            directory = self.controller.get_output_directory()  # 使用输出目录
+            if directory:
+                to_delete_dir = os.path.join(directory, "To_Delete")
+                os.makedirs(to_delete_dir, exist_ok=True)
+                moved_count = 0
+                for item in selected_items:
+                    values = self.duplicate_tree.item(item)['values']
+                    file_path = os.path.join(values[3], values[1])
+                    new_path = os.path.join(to_delete_dir, values[1])
+                    try:
+                        shutil.move(file_path, new_path)
+                        moved_count += 1
+                        self.duplicate_tree.delete(item)
+                    except Exception as e:
+                        print(_("移动文件 {} 时出错: {}").format(file_path, e))
+                messagebox.showinfo(_("完成"), _("已移动 {} 个文件到 To_Delete 目录").format(moved_count))
+            else:
+                messagebox.showerror(_("错误"), _("未设置输出目录"))
+        else:
             messagebox.showinfo(_("提示"), _("没有选中要移动的文件"))
-            return
-
-        directory = self.controller.get_directory()
-        if not directory:
-            messagebox.showinfo(_("提示"), _("请先选择一个目录"))
-            return
-
-        to_delete_dir = os.path.join(directory, "To_Delete")
-        os.makedirs(to_delete_dir, exist_ok=True)
-
-        moved_count = 0
-        for item in selected_items:
-            values = self.duplicate_tree.item(item)['values']
-            file_path = os.path.join(values[3], values[1])
-            file_name = os.path.basename(file_path)
-            new_path = os.path.join(to_delete_dir, file_name)
-
-            # 如果文件名已存在，则重命名
-            counter = 1
-            while os.path.exists(new_path):
-                name, ext = os.path.splitext(file_name)
-                new_path = os.path.join(to_delete_dir, f"{name}_{counter}{ext}")
-                counter += 1
-
-            try:
-                shutil.move(file_path, new_path)
-                moved_count += 1
-                self.duplicate_tree.delete(item)
-            except Exception as e:
-                print(_("移动文件 {} 时出错: {}").format(file_path, e))
-
-        messagebox.showinfo(_("完成"), _("已移动 {} 个文件到 To_Delete 目录").format(moved_count))
-        self.search_duplicates()  # 刷新列表
-        self.update_to_delete_dir_label()  # 更新标签
 
     def treeview_sort_column(self, tv, col, reverse):
         l = [(tv.set(k, col), k) for k in tv.get_children('')]

@@ -142,7 +142,7 @@ class AudioManager:
             values = tree.item(item)['values']
             file_path = os.path.join(values[3], values[1])
             try:
-                delete_file(file_path)
+                os.remove(file_path)
                 tree.delete(item)
                 deleted_count += 1
                 # 从 audio_files 和 audio_tags 中移除已删除的文件
