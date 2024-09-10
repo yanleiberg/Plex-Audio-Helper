@@ -52,6 +52,7 @@
 - **[音乐标签PC版](https://www.cnblogs.com/vinlxc/p/11347744.html)**: 用于批量编辑音频文件标签。
 - **[MusicBrainz Picard](https://picard.musicbrainz.org/)**: 一款智能音乐标签管理器，支持从 MusicBrainz 数据库获取专辑元数据。
 - **[CUETools](http://cue.tools/wiki/Main_Page)**: 用于分割整体音轨文件为多轨（plex不支持CUE文件）。
+- **[decrypt-mflac-frida](https://github.com/yllhwa/decrypt-mflac-frida)**: 用于解密 Windows QQ 音乐下载的加密音频文件。
 
 ## 许可
 
@@ -113,7 +114,8 @@ This project is recommended to be used in conjunction with the following softwar
 
 - **[Music Tag PC Version](https://www.cnblogs.com/vinlxc/p/11347744.html)**: Used for batch editing audio file tags.
 - **[MusicBrainz Picard](https://picard.musicbrainz.org/)**: An intelligent music tag manager that supports retrieving album metadata from the MusicBrainz database.
-- **[CUETools](http://cue.tools/wiki/Main_Page)**: Used for verification and repair of audio files.
+- **[CUETools](http://cue.tools/wiki/Main_Page)**: Used for splitting single-track audio files into multiple tracks (Plex doesn't support CUE files).
+- **[decrypt-mflac-frida](https://github.com/yllhwa/decrypt-mflac-frida)**: Used for decrypting encrypted audio files downloaded from Windows QQ Music.
 
 ## License
 
