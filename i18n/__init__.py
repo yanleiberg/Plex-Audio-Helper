@@ -15,7 +15,12 @@ class I18n:
         except FileNotFoundError:
             print(f"Translation file for {self.language} not found. Using original strings.")
 
-    # ... 其余代码保持不变 ...
+    def _(self, text):
+        return self.translations.get(text, text)
+
+    def set_language(self, language):
+        self.language = language
+        self.load_translations()
 
 # 创建全局翻译实例
 i18n = I18n()
