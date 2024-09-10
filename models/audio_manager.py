@@ -184,10 +184,13 @@ class AudioManager:
                 album = tags.get('album', '未知专辑')
                 file_name = os.path.basename(file_path)
                 
+                # 确保输出目录是正确的路径
+                output_directory = self.output_directory.replace("选择的目录: ", "").strip()
+                
                 if include_album:
-                    new_path = os.path.normpath(os.path.join(self.output_directory, artist, album, file_name))
+                    new_path = os.path.normpath(os.path.join(output_directory, artist, album, file_name))
                 else:
-                    new_path = os.path.normpath(os.path.join(self.output_directory, artist, file_name))
+                    new_path = os.path.normpath(os.path.join(output_directory, artist, file_name))
                 
                 # 确保目标目录存在
                 os.makedirs(os.path.dirname(new_path), exist_ok=True)
