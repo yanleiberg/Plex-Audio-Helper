@@ -19,8 +19,10 @@ class AudioManager:
     def cache_file_info(self, progress_callback=None):
         self.audio_files = []
         self.audio_tags = {}
-        total_files = sum([len(files) for _, _, files in os.walk(self.input_directory)])
+        total_files = sum(1 for root, _, files in os.walk(self.input_directory) 
+                          for file in files if file.lower().endswith(self.supported_formats))
         processed_files = 0
+
         for root, _, files in os.walk(self.input_directory):
             for file in files:
                 if file.lower().endswith(self.supported_formats):
@@ -29,7 +31,7 @@ class AudioManager:
                     self.audio_tags[file_path] = get_audio_tags(file_path)
                     processed_files += 1
                     if progress_callback:
-                        progress_callback(processed_files / total_files * 100)
+                        progress_callback(processed_files, total_files)
 
     def get_file_stats(self):
         stats = defaultdict(lambda: {"count": 0, "size": 0})

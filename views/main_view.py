@@ -188,9 +188,9 @@ class MainView:
     def choose_directory(self):
         directory = filedialog.askdirectory()
         if directory:
-            self.directory.set(_("选择的目录: {}").format(directory))
+            self.directory.set(directory)
             if not self.output_directory.get():
-                self.output_directory.set(_("选择的目录: {}").format(directory))
+                self.output_directory.set(directory)
             self.controller.set_directory(directory, self.output_directory.get())
             
             # 创建进度条窗口
@@ -215,9 +215,10 @@ class MainView:
             progress_label.pack()
             
             # 更新进度的回调函数
-            def update_progress(value):
-                progress_var.set(value)
-                progress_label.config(text=f"{value:.1f}%")
+            def update_progress(processed_files, total_files):
+                progress = (processed_files / total_files) * 100 if total_files > 0 else 0
+                progress_var.set(progress)
+                progress_label.config(text=f"{progress:.1f}% ({processed_files}/{total_files})")
                 progress_window.update()
             
             # 在新线程中执行文件缓存
