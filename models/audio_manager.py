@@ -8,7 +8,7 @@ class AudioManager:
     def __init__(self):
         self.input_directory = None
         self.output_directory = None
-        self.supported_formats = ('.mp3', '.flac', '.ape', '.wav', '.m4a')
+        self.supported_formats = ('.mp3', '.flac', '.ape', '.wav', '.m4a', '.aif', '.ogg')  # 添加 .aif 和 .ogg
         self.audio_files = []
         self.audio_tags = {}
 
