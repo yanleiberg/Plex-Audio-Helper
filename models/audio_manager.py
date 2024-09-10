@@ -29,7 +29,7 @@ class AudioManager:
             return file_path, tags
 
         if is_ssd(self.input_directory):
-            with concurrent.futures.ThreadPoolExecutor(max_workers=3) as executor:
+            with concurrent.futures.ThreadPoolExecutor(max_workers=10) as executor:
                 future_to_file = {}
                 for root, _, files in os.walk(self.input_directory):
                     for file in files:

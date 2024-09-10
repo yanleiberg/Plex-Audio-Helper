@@ -4,6 +4,7 @@ import tkinter as tk
 from tkinter import ttk
 from PIL import Image, ImageTk
 from i18n import _, i18n
+from utils.utils import load_settings  # Add this import
 
 # 添加项目根目录到 Python 路径
 project_root = os.path.dirname(os.path.abspath(__file__))
@@ -46,6 +47,14 @@ def main():
     
     controller = MainController(root)
     view = MainView(root, controller, style)
+    
+    # 设置关闭窗口时的回调
+    root.protocol("WM_DELETE_WINDOW", view.on_closing)
+    
+    # 加载初始设置
+    initial_settings = load_settings()
+    print("Initial settings loaded:", initial_settings)
+    
     root.mainloop()
 
 if __name__ == "__main__":

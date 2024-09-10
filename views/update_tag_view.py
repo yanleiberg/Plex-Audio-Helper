@@ -2,13 +2,16 @@ from i18n import _  # 添加这行
 import tkinter as tk
 from tkinter import ttk, messagebox
 import tkinter.font as tkfont  # 添加这行
+from utils.utils import save_settings, load_settings
 
 class UpdateTagView:
-    def __init__(self, parent, controller, style):
+    def __init__(self, parent, controller, style, settings):
         self.controller = controller
         self.style = style
         self.frame = ttk.Frame(parent)
+        self.settings = settings
         self.create_widgets()
+        self.load_column_widths()
 
     def create_widgets(self):
         self.frame.columnconfigure(0, weight=1)
@@ -52,18 +55,35 @@ class UpdateTagView:
             for file_name, current_tag, new_tag in batch:
                 self.tag_preview.insert("", "end", values=(file_name, current_tag, new_tag))
         
-        # 调整列宽以适应内容
-        self.frame.after(100, self.adjust_column_widths, preview_data)
+        # 只有在没有保存的列宽时才调整列宽
+        if 'update_tag_column_widths' not in self.settings:
+            self.load_column_widths()
 
-    def adjust_column_widths(self, preview_data):
-        font = tkfont.Font()
+    def load_column_widths(self):
+        column_widths = self.settings.get('update_tag_column_widths', {})
+        if column_widths:
+            for col in ("file", "current_tag", "new_tag"):
+                width = column_widths.get(col)
+                if width:
+                    self.tag_preview.column(col, width=width)
+        else:
+            # 如果没有保存的列宽，平分 treeview 的总宽度
+            total_width = self.tag_preview.winfo_width()
+            if total_width > 0:  # 确保 treeview 已经被渲染
+                column_width = total_width // 3
+                for col in ("file", "current_tag", "new_tag"):
+                    self.tag_preview.column(col, width=column_width)
+            else:
+                # 如果 treeview 还没有被渲染，设置一个默认宽度
+                default_width = 200
+                for col in ("file", "current_tag", "new_tag"):
+                    self.tag_preview.column(col, width=default_width)
+
+    def save_column_widths(self, settings):
+        column_widths = {}
         for col in ("file", "current_tag", "new_tag"):
-            max_width = font.measure(self.tag_preview.heading(col)['text'])
-            for row in preview_data[:1000]:  # 只检查前1000行以提高性能
-                width = font.measure(str(row[self.tag_preview["columns"].index(col)]))
-                if width > max_width:
-                    max_width = width
-            self.tag_preview.column(col, width=max_width + 10)  # 添加一些额外的空间
+            column_widths[col] = self.tag_preview.column(col, 'width')
+        settings['update_tag_column_widths'] = column_widths
 
     def start_update_tag(self):
         if messagebox.askyesno(_("确认"), _("确定要更新所有音频文件的 Track Number 吗？")):

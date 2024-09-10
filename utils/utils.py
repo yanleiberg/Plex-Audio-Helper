@@ -20,3 +20,24 @@ def is_ssd(path):
     except:
         pass
     return False
+
+import json
+import os
+
+def save_settings(settings, filename='config/settings.json'):
+    os.makedirs(os.path.dirname(filename), exist_ok=True)
+    with open(filename, 'w') as f:
+        json.dump(settings, f, indent=2)
+    print(f"Settings saved to {filename}")
+    print(f"Saved settings content: {json.dumps(settings, indent=2)}")
+
+def load_settings(filename='config/settings.json'):
+    if os.path.exists(filename):
+        with open(filename, 'r') as f:
+            settings = json.load(f)
+        print(f"Settings loaded from {filename}")
+        print(f"Loaded settings content: {json.dumps(settings, indent=2)}")
+        return settings
+    return {}
+
+
