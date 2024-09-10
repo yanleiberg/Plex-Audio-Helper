@@ -76,13 +76,15 @@ class MainView:
         frame = ttk.Frame(parent, padding="5")
         frame.grid(row=0, column=0, sticky=(tk.W, tk.E))
 
-        ttk.Label(frame, text=self.strings.SELECT_DIRECTORY, image=self.icons['folder'], compound=tk.LEFT).grid(row=0, column=0, padx=5, pady=5)
+        # 输入目录
+        ttk.Label(frame, text=_("输入目录:"), image=self.icons['folder'], compound=tk.LEFT).grid(row=0, column=0, padx=5, pady=5)
         ttk.Entry(frame, textvariable=self.directory, width=50).grid(row=0, column=1, padx=5, pady=5)
         ttk.Button(frame, text="...", command=self.choose_directory, width=3).grid(row=0, column=2, padx=5, pady=5)
 
-        ttk.Label(frame, text=_("输出目录:")).grid(row=1, column=0, padx=5, pady=5)
+        # 输出目录
+        ttk.Label(frame, text=_("输出目录:"), image=self.icons['folder'], compound=tk.LEFT).grid(row=1, column=0, padx=5, pady=5)
         ttk.Entry(frame, textvariable=self.output_directory, width=50).grid(row=1, column=1, padx=5, pady=5)
-        ttk.Button(frame, text=_("选择输出目录"), command=self.choose_output_directory, width=15).grid(row=1, column=2, padx=5, pady=5)
+        ttk.Button(frame, text="...", command=self.choose_output_directory, width=3).grid(row=1, column=2, padx=5, pady=5)
 
     def create_file_stats_frame(self, parent):
         frame = ttk.Frame(parent, padding="5")
