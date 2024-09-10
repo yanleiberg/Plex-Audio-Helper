@@ -196,7 +196,8 @@ class MainView:
             # 创建进度条窗口
             progress_window = tk.Toplevel(self.root)
             progress_window.title(_("读取文件中"))
-            progress_window.geometry("300x100")
+            progress_window.geometry("400x150")  # 增加窗口大小
+            progress_window.resizable(False, False)  # 禁止调整大小
             
             # 设置进度窗口在主窗口中间
             progress_window.update_idletasks()
@@ -208,8 +209,8 @@ class MainView:
             progress_window.grab_set()
             
             progress_var = tk.DoubleVar()
-            progress_bar = ttk.Progressbar(progress_window, variable=progress_var, maximum=100)
-            progress_bar.pack(pady=20)
+            progress_bar = ttk.Progressbar(progress_window, variable=progress_var, maximum=100, length=350)  # 增加进度条长度
+            progress_bar.pack(pady=30)  # 增加上下边距
             
             progress_label = ttk.Label(progress_window, text="0%")
             progress_label.pack()
