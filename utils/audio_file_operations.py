@@ -25,11 +25,23 @@ def get_audio_tags(file_path):
             return {}
 
         tags = {}
-        if isinstance(audio, (MP3, FLAC, WAVE, OggVorbis, AIFF)):  # 修改这行
+        if isinstance(audio, MP3):
+            try:
+                id3 = ID3(file_path)
+                tags['title'] = str(id3.get('TIT2', [''])[0])
+                tags['artist'] = str(id3.get('TPE1', ['未知艺术家'])[0])
+                tags['album'] = str(id3.get('TALB', ['未知专辑'])[0])
+                tags['tracknumber'] = str(id3.get('TRCK', ['0/0'])[0])
+            except ID3NoHeaderError:
+                pass
+            tags['length'] = audio.info.length
+        elif isinstance(audio, (FLAC, OggVorbis, AIFF)):
             tags['title'] = str(audio.get('title', [''])[0])
             tags['artist'] = str(audio.get('artist', ['未知艺术家'])[0])
             tags['album'] = str(audio.get('album', ['未知专辑'])[0])
             tags['tracknumber'] = str(audio.get('tracknumber', ['0/0'])[0])
+            tags['length'] = audio.info.length
+        elif isinstance(audio, WAVE):
             tags['length'] = audio.info.length
         else:
             # 处理其他文件类型
