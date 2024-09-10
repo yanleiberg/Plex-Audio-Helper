@@ -102,7 +102,7 @@ class DuplicateSearchView:
         messagebox.showinfo(_("自动选择完成"), _("已选择 {} 个文件为待删除状态").format(selected_count))
 
     def delete_selected(self):
-        selected_items = [item for item in self.duplicate_tree.selection() if self.duplicate_tree.item(item)['values'][0] == "✓"]
+        selected_items = [item for item in self.duplicate_tree.get_children() if self.duplicate_tree.item(item)['values'][0] == "✓"]
         print(f"Debug: Selected items for deletion: {len(selected_items)}")
         if selected_items:
             if messagebox.askyesno(_("确认"), _("确定要删除选中的文件吗？")):
@@ -113,7 +113,7 @@ class DuplicateSearchView:
             messagebox.showinfo(_("提示"), _("没有选中要删除的文件"))
 
     def move_files_to_delete(self):
-        selected_items = [item for item in self.duplicate_tree.selection() if self.duplicate_tree.item(item)['values'][0] == "✓"]
+        selected_items = [item for item in self.duplicate_tree.get_children() if self.duplicate_tree.item(item)['values'][0] == "✓"]
         print(f"Debug: Selected items for moving: {len(selected_items)}")
         if selected_items:
             directory = self.controller.get_output_directory()  # 使用输出目录
@@ -132,6 +132,7 @@ class DuplicateSearchView:
                     except Exception as e:
                         print(_("移动文件 {} 时出错: {}").format(file_path, e))
                 messagebox.showinfo(_("完成"), _("已移动 {} 个文件到 To_Delete 目录").format(moved_count))
+                self.search_duplicates()  # 刷新列表
             else:
                 messagebox.showerror(_("错误"), _("未设置输出目录"))
         else:
