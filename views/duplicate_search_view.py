@@ -118,6 +118,8 @@ class DuplicateSearchView:
         if selected_items:
             directory = self.controller.get_output_directory()  # 使用输出目录
             if directory:
+                # 移除可能的前缀
+                directory = directory.replace("选择的目录: ", "").strip()
                 to_delete_dir = os.path.join(directory, "To_Delete")
                 os.makedirs(to_delete_dir, exist_ok=True)
                 moved_count = 0

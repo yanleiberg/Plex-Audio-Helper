@@ -51,4 +51,5 @@ class MainController:
         return self.audio_manager.input_directory
 
     def get_output_directory(self):
-        return self.audio_manager.output_directory or self.audio_manager.input_directory
+        output_dir = self.audio_manager.output_directory or self.audio_manager.input_directory
+        return output_dir.replace("选择的目录: ", "").strip()

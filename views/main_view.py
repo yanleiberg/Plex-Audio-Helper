@@ -235,7 +235,7 @@ class MainView:
     def choose_output_directory(self):
         output_directory = filedialog.askdirectory()
         if output_directory:
-            self.output_directory.set(_("选择的目录: {}").format(output_directory))
+            self.output_directory.set(output_directory)  # 直接设置路径，不添加前缀
             self.controller.set_directory(self.controller.get_input_directory(), output_directory)
             self.refresh_all_views()
 
