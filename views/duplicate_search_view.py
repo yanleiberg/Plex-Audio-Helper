@@ -10,6 +10,7 @@ class DuplicateSearchView:
         self.style = style
         self.frame = ttk.Frame(parent)
         self.create_widgets()
+        self.bind_events()  # 添加这行
 
     def create_widgets(self):
         button_frame = ttk.Frame(self.frame)
@@ -54,6 +55,19 @@ class DuplicateSearchView:
         vsb.pack(side=tk.RIGHT, fill=tk.Y)
 
         self.duplicate_tree.tag_configure('delete', background='light pink')  # 添加这行
+        self.duplicate_tree.tag_configure('keep', background='light green')  # 添加这行
+
+    def bind_events(self):
+        self.duplicate_tree.bind("<Double-1>", self.toggle_delete_status)
+
+    def toggle_delete_status(self, event):
+        item = self.duplicate_tree.identify('item', event.x, event.y)
+        if item:
+            values = self.duplicate_tree.item(item, 'values')
+            new_status = "✓" if values[0] != "✓" else " "
+            new_values = (new_status,) + values[1:]
+            new_tags = ('delete',) if new_status == "✓" else ('keep',)
+            self.duplicate_tree.item(item, values=new_values, tags=new_tags)
 
     def on_tab_selected(self):
         self.search_duplicates()
@@ -82,6 +96,8 @@ class DuplicateSearchView:
             item = self.duplicate_tree.insert("", "end", values=file_info)
             if file_info[0] == _("✓"):  # 如果文件被标记为删除
                 self.duplicate_tree.item(item, tags=('delete',))
+            else:
+                self.duplicate_tree.item(item, tags=('keep',))
         print(f"Debug: Found {len(duplicates)} potential duplicate files")
 
     def auto_select_duplicates(self):
@@ -182,8 +198,10 @@ class DuplicateSearchView:
         # 更新主题相关的样式
         if theme == "light":
             self.duplicate_tree.tag_configure('delete', background='light pink')
+            self.duplicate_tree.tag_configure('keep', background='light green')
         else:
             self.duplicate_tree.tag_configure('delete', background='#8B0000')  # 深红色
+            self.duplicate_tree.tag_configure('keep', background='#006400')  # 深绿色
 
         # 更新标签样式
         fg_color = self.style.lookup("TLabel", "foreground")
